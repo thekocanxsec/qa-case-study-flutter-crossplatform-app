@@ -10,7 +10,7 @@ During the development process, I saw firsthand how seemingly tiny oversights—
 
 To view the full, interactive display of all 18 production case studies, complete with root cause analyses, code proofs, and QA takeaways, please visit the live portfolio website:
 
-👉 **[[https://thekocanxsec.github.io/Document-System-QA-portfolion](https://thekocanxsec.github.io/qa-case-study-flutter-crossplatform-app/)]([https://thekocanxsec.github.io/Document-System-QA-portfolion](https://thekocanxsec.github.io/qa-case-study-flutter-crossplatform-app/))**
+👉 **[https://thekocanxsec.github.io/qa-case-study-flutter-crossplatform-app/](https://thekocanxsec.github.io/qa-case-study-flutter-crossplatform-app/)**
 
 ---
 
