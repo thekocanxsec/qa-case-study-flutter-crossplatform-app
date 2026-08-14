@@ -1,0 +1,86 @@
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { motion } from 'framer-motion';
+
+interface HorizontalScrollProps {
+  children: React.ReactNode;
+}
+
+export const HorizontalScroll: React.FC<HorizontalScrollProps> = ({ children }) => {
+  const [isDesktop, setIsDesktop] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const isScrolling = useRef(false);
+  const totalSlides = React.Children.count(children);
+
+  useEffect(() => {
+    const checkIsDesktop = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    checkIsDesktop();
+    window.addEventListener('resize', checkIsDesktop);
+    return () => window.removeEventListener('resize', checkIsDesktop);
+  }, []);
+
+  const handleWheel = useCallback((e: WheelEvent) => {
+    if (!isDesktop) return;
+    
+    // Allow vertical scrolling inside designated containers without triggering slide change
+    if ((e.target as HTMLElement).closest('.stop-horizontal-scroll')) {
+      return;
+    }
+    
+    if (Math.abs(e.deltaY) < 20 && Math.abs(e.deltaX) < 20) return;
+
+    e.preventDefault();
+
+    if (isScrolling.current) return;
+
+    const direction = e.deltaY > 0 || e.deltaX > 0 ? 1 : -1;
+    
+    setCurrentSlide((prev) => {
+      const nextSlide = prev + direction;
+      if (nextSlide >= 0 && nextSlide < totalSlides) {
+        return nextSlide;
+      }
+      return prev;
+    });
+
+    isScrolling.current = true;
+    setTimeout(() => {
+      isScrolling.current = false;
+    }, 1000);
+  }, [isDesktop, totalSlides]);
+
+  useEffect(() => {
+    if (isDesktop) {
+      window.addEventListener('wheel', handleWheel, { passive: false });
+    }
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+    };
+  }, [isDesktop, handleWheel]);
+
+  if (!isDesktop) {
+    return <div className="flex flex-col">{children}</div>;
+  }
+
+  return (
+    <section className="relative h-screen w-screen overflow-hidden bg-apple-gray-50">
+      <motion.div 
+        animate={{ x: `-${currentSlide * 100}vw` }}
+        transition={{ type: 'spring', damping: 25, stiffness: 100 }}
+        className="flex h-full w-full"
+      >
+        {children}
+      </motion.div>
+      
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-50">
+        {Array.from({ length: totalSlides }).map((_, i) => (
+          <div 
+            key={i} 
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-apple-gray-900 scale-125' : 'bg-apple-gray-300'}`}
+          />
+        ))}
+      </div>
+    </section>
+  );
+};
