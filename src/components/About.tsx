@@ -54,10 +54,10 @@ export const About: React.FC = () => {
             <AnimatePresence>
               {showEmailPanel && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="absolute bottom-full mb-6 w-72 bg-white border border-apple-gray-200 shadow-2xl rounded-2xl p-4 z-50 before:content-[''] before:absolute before:-bottom-2 before:left-1/2 before:-translate-x-1/2 before:w-4 before:h-4 before:bg-white before:border-r before:border-b before:border-apple-gray-200 before:rotate-45"
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  className="absolute top-full mt-6 w-72 bg-white border border-apple-gray-200 shadow-2xl rounded-2xl p-4 z-50 before:content-[''] before:absolute before:-top-2 before:left-1/2 before:-translate-x-1/2 before:w-4 before:h-4 before:bg-white before:border-l before:border-t before:border-apple-gray-200 before:rotate-45"
                 >
                   <div className="relative z-10">
                     <p className="text-xs font-semibold text-apple-gray-500 uppercase tracking-wider mb-3">Direct Email</p>
