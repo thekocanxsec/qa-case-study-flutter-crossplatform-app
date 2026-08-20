@@ -9,6 +9,8 @@ export const HorizontalScroll: React.FC<HorizontalScrollProps> = ({ children }) 
   const [isDesktop, setIsDesktop] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const isScrolling = useRef(false);
+  const lastTime = useRef(Date.now());
+  const lastDelta = useRef(0);
   const totalSlides = React.Children.count(children);
 
   useEffect(() => {
@@ -28,11 +30,30 @@ export const HorizontalScroll: React.FC<HorizontalScrollProps> = ({ children }) 
       return;
     }
     
-    if (Math.abs(e.deltaY) < 20 && Math.abs(e.deltaX) < 20) return;
+    const now = Date.now();
+    const dt = now - (lastTime.current || now);
+    lastTime.current = now;
+
+    const currentDelta = Math.max(Math.abs(e.deltaX), Math.abs(e.deltaY));
+    
+    // If it's been more than 150ms since the last event, it's a new scroll action.
+    // Reset our lastDelta so the new scroll registers as an acceleration.
+    if (dt > 150) {
+      lastDelta.current = 0;
+    }
+    
+    const isAccelerating = currentDelta > lastDelta.current;
+    lastDelta.current = currentDelta;
+
+    if (currentDelta < 30) return;
 
     e.preventDefault();
 
     if (isScrolling.current) return;
+    
+    // Ignore decelerating scroll events (trackpad inertia) 
+    // to prevent double-triggering after the 1000ms lock expires.
+    if (!isAccelerating) return;
 
     const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY);
     const direction = isHorizontal ? (e.deltaX > 0 ? 1 : -1) : (e.deltaY > 0 ? 1 : -1);
