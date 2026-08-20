@@ -34,7 +34,8 @@ export const HorizontalScroll: React.FC<HorizontalScrollProps> = ({ children }) 
 
     if (isScrolling.current) return;
 
-    const direction = e.deltaY > 0 || e.deltaX > 0 ? 1 : -1;
+    const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+    const direction = isHorizontal ? (e.deltaX > 0 ? 1 : -1) : (e.deltaY > 0 ? 1 : -1);
     
     setCurrentSlide((prev) => {
       const nextSlide = prev + direction;
